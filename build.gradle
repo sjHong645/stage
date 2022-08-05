@@ -27,5 +27,6 @@ repositories {
 
 dependencies {
     compile('org.springframework.boot:spring-boot-starter-web') // 이 부분은 gradle 버전을 4.10.2로 바꿔야 가능
+    compile('org.projectlombok:lombok') // 라이브러리 롬복 추가
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
