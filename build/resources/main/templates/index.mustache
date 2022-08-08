@@ -1,11 +1,19 @@
-<!DOCTYPE HTML>
-<html>
-<head>
-    <title>스프링 부트 웹서비스</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+{{>layout/header}}
+    <h1>채용 공고 동시 검색</h1>
 
-</head>
-<body>
-    <h1>스프링 부트로 시작하는 웹 서비스</h1>
-</body>
-</html>
+    <section>
+        <!--- <form action="https://search.naver.com/search.naver">--->
+        <!-- <form action="https://www.wanted.co.kr/search?"> -->
+            <div class="search">
+                <!--<input type="text" name="query" value=""> -->
+                <input id="input_query" class="form-control mr-2" value="">
+                <!-- <button type="submit">검색</button> -->
+                <button type="button" id="btn_srch">
+                    <!--<i class="fa fa-search" aria-hidden="true"></i>-->
+                    검색
+                </button>
+            </div>
+        <!--</form> -->
+    </section>
+
+{{>layout/footer}}
