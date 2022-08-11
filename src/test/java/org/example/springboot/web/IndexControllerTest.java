@@ -34,13 +34,15 @@ public class IndexControllerTest {
     /*@Test
     public void search_completed() {
 
+        // given
+        String target = "가나다";
+
         // when
-        // TestRestTemplate을 통해 "/"로 호출했을 때
-        // index.mustache에 포함된 코드들이 있는지 확인
         String body = this.restTemplate.getForObject("/", String.class);
 
 
-        assertThat(body).contains("검색");
+
+        // then - target을 입력했을 때 제대로된 URL을 호출하는지.
 
 
     }*/

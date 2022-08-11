@@ -12,11 +12,15 @@ public class IndexController {
     // 앞의 경로 : src/main/resources/template
     // 뒤의 파일 확장자 : .mustache
 
-    // 여기서는 "/"만 던져줘도 src/main/resources/template/index.mustache를 반환해줌
+    // 여기서는 "/"만 던져줘도 src/main/resources/templates/index.mustache를 반환해줌
     @GetMapping("/")
     public String index() {
         return "index";
     }
+
+    // 그러니까 다른 파일을 전달하고 싶다면
+    // @GetMapping의 인자에 다른 문자열을 넣으면 되겠다.
+
 
 
 }

@@ -2,18 +2,13 @@
     <h1>채용 공고 동시 검색</h1>
 
     <section>
-        <!--- <form action="https://search.naver.com/search.naver">--->
-        <!-- <form action="https://www.wanted.co.kr/search?"> -->
+        <form action="http://localhost:8080/multiSearch">
             <div class="search">
-                <!--<input type="text" name="query" value=""> -->
-                <input id="input_query" class="form-control mr-2" value="">
-                <!-- <button type="submit">검색</button> -->
-                <button type="button" id="btn_srch">
-                    <!--<i class="fa fa-search" aria-hidden="true"></i>-->
-                    검색
-                </button>
+                <input type="text" name="company" value="">
+                <button type="submit">회사 검색</button>
             </div>
-        <!--</form> -->
+        </form>
     </section>
+
 
 {{>layout/footer}}
