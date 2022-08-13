@@ -1,10 +1,18 @@
 package org.example.springboot.web;
 
+import java.io.IOException;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 // import org.springframework.web.bind.annotation.RestController;
+
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 @Controller
 public class SearchController {
@@ -23,7 +31,7 @@ public class SearchController {
 
     // 일단 company 입력은 받음
     @GetMapping("/multiSearch")
-    public String multiSearch(@RequestParam("company") String company, Model model) {
+    public String multiSearch(@RequestParam("company") String company, Model model) throws IOException {
     // public String multiSearch() {
 
         // 이건 콘솔에서나 출력되지 화면에서는 출력되지 않았다.
@@ -57,6 +65,26 @@ public class SearchController {
 
 
         model.addAttribute("results", results);
+
+        // 사람인 파싱
+        Connection connSaramIn = Jsoup.connect(saramIn);
+
+        Document document = connSaramIn.get(); // IOException 다뤄야 함
+
+        // div 태그에 있는 클래스를 적으면 된다
+        Elements jobTits = document.getElementsByClass("area_job");
+        Element jobTit = jobTits.get(0); // class가 job_tit 인 것 중 0번째 값
+
+        Elements corpNames = document.getElementsByClass("area_corp");
+        Element corpName = corpNames.get(0);
+
+        // area_job 클래스 아래에 있는 값 중에서 h2 태그 값 중 0번째 값
+        String title = jobTit.getElementsByTag("h2").get(0).text();
+
+        // area_corp 클래스 아래에 있는 값 중에서 strong 태그 값 중 0번째 값
+        String content = corpName.getElementsByTag("strong").get(0).text();
+
+        model.addAttribute("saramInList", title + "\n\n" + content);
 
         return "multiSearch";
     }
