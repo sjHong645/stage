@@ -1,6 +1,7 @@
 package org.example.springboot.web;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +14,12 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 @Controller
 public class SearchController {
@@ -32,13 +39,6 @@ public class SearchController {
     // 일단 company 입력은 받음
     @GetMapping("/multiSearch")
     public String multiSearch(@RequestParam("company") String company, Model model) throws IOException {
-    // public String multiSearch() {
-
-        // 이건 콘솔에서나 출력되지 화면에서는 출력되지 않았다.
-
-        /*System.out.println("사람인 결과");
-        System.out.println("잡코리아 결과");
-        System.out.println("원티드 결과");*/
 
         // return을 해야 화면에 출력된다.
         // multiSearch.mustache로 넘어간다.
@@ -46,7 +46,6 @@ public class SearchController {
         // 여기서 작업한 내용을 mutliSearch.mustache에 전달만 해주면 되지 않을까?
 
         // {{name}}에 attributeValue를 출력한다.
-        // 관려
         model.addAttribute("name", "홍승준");
 
         String results = "";
@@ -63,30 +62,67 @@ public class SearchController {
         model.addAttribute("jobKorea", jobKorea);
         model.addAttribute("wanted", wanted);
 
-
         model.addAttribute("results", results);
 
-        // 사람인 파싱
-        Connection connSaramIn = Jsoup.connect(saramIn);
-
-        Document document = connSaramIn.get(); // IOException 다뤄야 함
-
-        // div 태그에 있는 클래스를 적으면 된다
-        Elements jobTits = document.getElementsByClass("area_job");
-        Element jobTit = jobTits.get(0); // class가 job_tit 인 것 중 0번째 값
-
-        Elements corpNames = document.getElementsByClass("area_corp");
-        Element corpName = corpNames.get(0);
-
-        // area_job 클래스 아래에 있는 값 중에서 h2 태그 값 중 0번째 값
-        String title = jobTit.getElementsByTag("h2").get(0).text();
-
-        // area_corp 클래스 아래에 있는 값 중에서 strong 태그 값 중 0번째 값
-        String content = corpName.getElementsByTag("strong").get(0).text();
-
-        model.addAttribute("saramInList", title + "\n\n" + content);
+        model.addAttribute("saramInList", saramInSearch(saramIn, company));
+        // model.addAttribute("jobKoreaList", saramInSearch(saramIn));
+        // model.addAttribute("wantedList", saramInSearch(saramIn));
 
         return "multiSearch";
     }
+
+    // 파라미터 str = 검색 url
+    // 일단, 채용정보 1페이지에 있는 내용만 출력하도록 하자.
+    // 채용정보 파라미터는 recruitPage. company 뒤에 &로 이어서 전달하면 된다.
+    // ex) 2페이지 - recruitPage = 2
+    public String saramInSearch(String str, String company) throws IOException {
+
+        String result = "";
+
+        WebDriver driver;
+
+        final String WEB_DRIVER_ID = "webdriver.chrome.driver";
+        final String WEB_DRIVER_PATH = "C:/devtool/chromedriver_win32/chromedriver.exe"; // 크롬 드라이버 경로
+
+        String base_url; // 크롤링 할 url
+
+        // System Property 설정
+        System.setProperty(WEB_DRIVER_ID, WEB_DRIVER_PATH);
+
+        driver = new ChromeDriver();
+        base_url = str;
+
+        try {
+
+            //get page (= 브라우저에서 url을 주소창에 넣은 후 request 한 것과 같다)
+            driver.get(base_url);
+
+            // item_recruit라는 이름의 클래스 리스트를 불러옴
+            List<WebElement> el1 = driver.findElements(By.className("item_recruit"));
+
+            System.out.println("el1.size() = " + el1.size());
+
+            for(int i = 0; i < el1.size(); i++) {
+
+                // System.out.println(el1.get(i).getText());
+                result += el1.get(i).getText();
+
+            }
+
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+        }
+
+
+        return result;
+    }
+
+
+
 }
+
+
 
