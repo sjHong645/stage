@@ -98,14 +98,25 @@ public class SearchController {
             driver.get(base_url);
 
             // item_recruit라는 이름의 클래스 리스트를 불러옴
-            List<WebElement> el1 = driver.findElements(By.className("item_recruit"));
+            // List<WebElement> el1 = driver.findElements(By.className("job_tit"));
 
-            System.out.println("el1.size() = " + el1.size());
+            // <div id = "recruit_info_list"> -> <div class = "content">
+            // -> <div class = "item_recruit"> -> <div class = "area_job"> -> <h2 class = "job_tit">
+            List<WebElement> titleList = driver.findElements(
+                    By.cssSelector("#recruit_info_list > div.content > div.item_recruit > div.area_job > h2.job_tit"));
 
-            for(int i = 0; i < el1.size(); i++) {
+            List<WebElement> companyList = driver.findElements(
+                    By.cssSelector("#recruit_info_list > div.content > div.item_recruit > div.area_corp > strong.corp_name"));
+
+            System.out.println("titleList.size() = " + titleList.size());
+
+            for(int i = 0; i < titleList.size(); i++) {
 
                 // System.out.println(el1.get(i).getText());
-                result += el1.get(i).getText();
+                // {}를 3개 쓰면서 <br>을 추가해줌으로써 줄 바꿈이 가능해짐
+                result += titleList.get(i).getText()
+                        + " "
+                        + companyList.get(i).getText() + "<br>";
 
             }
 
@@ -114,6 +125,8 @@ public class SearchController {
 
             e.printStackTrace();
 
+        } finally {
+            driver.close();
         }
 
 
