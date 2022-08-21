@@ -1,0 +1,24 @@
+{{>layout/header}}
+
+<h1>hello multiSearch</h1>
+
+이곳에 동시 검색 결과가 나타나도록 해보자. <br>
+
+Welcome, {{name}} <br> <!-- SearchController.java에서 model을 통해 전달한 값을 출력 -->
+
+{{results}} <br>
+
+<a href={{saramIn}}>사람인 링크</a><br>
+<a href={{jobKorea}}>잡코리아 링크</a><br>
+<a href={{wanted}}>원티드 링크</a><br>
+
+사람인 목록 <br>
+{{saramInList}} <br>
+
+잡코리아 목록 <br>
+<!-- {jobKoreaList}} <br> -->
+
+원티드 목록 <br>
+<!-- {wantedList}} <br> -->
+
+{{>layout/footer}}
