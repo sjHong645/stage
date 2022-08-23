@@ -1,4 +1,4 @@
-package org.example.springboot.web.recruiteWebSite;
+package org.example.springboot.web.recruitWebSite;
 
 import java.io.IOException;
 import java.util.List;

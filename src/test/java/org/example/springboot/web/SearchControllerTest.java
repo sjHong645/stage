@@ -1,51 +1,73 @@
 package org.example.springboot.web;
 
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import static org.example.springboot.web.recruitWebSite.SaramInSearchForTest.saramInSearch_for_test;
 import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+// @WebMvcTest(controllers = SearchController.class)
+// 위 어노테이션을 걸었다면 mvc 관련 테스트가 있어야 함
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(controllers = SearchController.class)
+@SpringBootTest
 public class SearchControllerTest {
 
-    @Autowired
-    private MockMvc mvc;
-    // private TestRestTemplate restTemplate;
+    // 출처 : https://nesoy.github.io/articles/2017-03/Selenium
+    private WebDriver driver;
 
+    final String WEB_DRIVER_ID = "webdriver.chrome.driver";
+    final String WEB_DRIVER_PATH = "C:/devtool/chromedriver_win32/chromedriver.exe"; // 크롬 드라이버 경로
 
-    // 테스트 코드 제대로 짜야함
+    // 테스트 전에 실행할 코드
+    @Before
+    public void setUp() {
+        System.setProperty(WEB_DRIVER_ID, WEB_DRIVER_PATH);
+        driver = new ChromeDriver(); // 드라이버 생성 및 설정
+    }
+
+    // 테스트 후에 실행할 코드
+    @After
+    public void tearDown() {
+        driver.quit(); // 드라이버 종료
+    }
+
+    // 여기서 뭘 확인하도록 하면 좋을까.
+    // 뭘 확인해야 제대로 채용 공고 리스트를 불러왔다고 할 수 있을까
     @Test
-    public void search_completed() throws Exception {
+    public void saramInSearch_Completed() throws Exception{
 
-        String value = "company";
+        String company = "사람인";
+        String url = "https://www.saramin.co.kr/zf_user/search?searchword=" + company;
 
-        mvc.perform(get("/multiSearch")
-                .param("company", value))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.company",is(value)));
+        driver.get(url);
 
-        // String body = this.restTemplate.getForObject("/multiSearch?" + "company=" + company, String.class);
-        // String body = this.restTemplate.getForObject("/multiSearch?" + param + "=" + value, String.class);
+        Thread.sleep(1000); // 1초만 대기하자. 동작이 너무 빨라서 숫자가 아니라 ... 이 먼저 크롤링된다.
 
+        // 전체 검색 결과 개수가 저장되어 있는 위치
+        WebElement total = driver.findElement(By.cssSelector("#sp_preview_total_cnt"));
 
-        /*mvc.perform(get("/multiSearch")
-                .param("company", company))
-                .andExpect(status().isOk())
-                .andExpect(content().string("multiSearch " + company));*/
-        // assertThat(body).contains("hello multiSearch");
+        // total.getText()를 실행하면 전체 검색 결과 개수를 알아낼 수 있다.
+
+        // 전체 검색 결과와
+        // 실제 채용공고 개수가 같은지 비교
+        Assert.assertThat(Integer.parseInt(total.getText().replace(",", "")),
+                is(saramInSearch_for_test(url)));
 
     }
 
 
+
 }
+
