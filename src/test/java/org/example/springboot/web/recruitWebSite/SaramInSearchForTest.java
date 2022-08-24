@@ -8,7 +8,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-
+import org.openqa.selenium.chrome.ChromeOptions;
 
 // 테스트를 위한 사람인 검색 클래스
 public class SaramInSearchForTest {
@@ -29,11 +29,20 @@ public class SaramInSearchForTest {
         // System Property 설정
         System.setProperty(WEB_DRIVER_ID, WEB_DRIVER_PATH);
 
-        driver = new ChromeDriver();
+        // 단일한 메소드로 만들자
+        // 속도 개선 출처 https://lotuus.tistory.com/108
+        ChromeOptions options = new ChromeOptions();
+
+        // *[@id="recruit_info"]/div[2]/div/div[3]/button
+
+        // options.addArguments("headless"); // 브라우저 안 띄움
+
+        options.addArguments("--blink-settings=imagesEnabled=false"); // 이미지 로딩 차단
+
+        driver = new ChromeDriver(options);
         base_url = str + "&recruitPage="; // 페이지 번호 매개변수를 추가한 url
 
         List<WebElement> titleList = new LinkedList<WebElement>();
-        List<WebElement> companyList = new LinkedList<WebElement>();
 
         try {
             int pageNumber = 1;
@@ -42,7 +51,10 @@ public class SaramInSearchForTest {
             while(true) {
                 // get page (= 브라우저에서 url을 주소창에 넣은 후 request 한 것과 같다)
                 // 반복문이 돌아올 때 마자 페이지 번호를 1씩 증가시킨다.
-                driver.get(base_url + Integer.toString(pageNumber++));
+                // 한 페이지에 100개의 채용 공고가 나타나도록 함
+                driver.get(base_url + (pageNumber++) + "&recruitPageCount=100");
+
+
 
                 // item_recruit라는 이름의 클래스 리스트를 불러옴
 
@@ -50,9 +62,6 @@ public class SaramInSearchForTest {
                 // -> <div class = "item_recruit"> -> <div class = "area_job"> -> <h2 class = "job_tit">
                 titleList = driver.findElements(
                         By.cssSelector("#recruit_info_list > div.content > div.item_recruit > div.area_job > h2.job_tit"));
-
-                companyList = driver.findElements(
-                        By.cssSelector("#recruit_info_list > div.content > div.item_recruit > div.area_corp > strong.corp_name"));
 
                 // 더 이상 검색결과가 없을 때까지 반복한다.
                 if(titleList.size() == 0) break;

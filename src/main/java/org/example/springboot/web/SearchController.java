@@ -2,6 +2,8 @@ package org.example.springboot.web;
 
 import java.io.IOException;
 
+import org.example.springboot.web.recruitWebSite.Wanted;
+import org.example.springboot.web.recruitWebSite.JobKorea;
 import org.example.springboot.web.recruitWebSite.SaramIn;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,6 +32,9 @@ public class SearchController {
         model.addAttribute("wanted", wanted);
 
         model.addAttribute("saramInList", SaramIn.saramInSearch(saramIn));
+        model.addAttribute("jobKoreaList", JobKorea.jobKoreaSearch(saramIn));
+
+
 
         return "multiSearch";
     }
